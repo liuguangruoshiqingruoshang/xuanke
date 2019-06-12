@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+ <mapper namespace="com.hpb.dao.UserMapper">
+ <resultMap type="Admin" id="admin">
+	  <id property="userId" column="userId"/>
+	   <result property="userName" column="userName"/>
+	   <result property="userPw" column="userPw"/>
+	  </resultMap>
+ 	<select id="user_log0" resultType="admin">
+ 		select userName,userPw from t_admin where userName=#{name} and userPw=#{pwd}
+ 	</select>
+ 	<update id="update" parameterType="admin">
+     update t_admin set userPw=#{pwd} where userName=#{name}
+    </update>
+    <select id="getAllAdmin" resultType="admin">
+ 		select userId,userName,userPw from t_admin 
+ 	</select>
+ 	<delete id="delAdmin" parameterType="admin">
+     delete from t_admin where userId=#{id}
+    </delete> 
+    <insert id="insertAdmin" parameterType="admin">
+     insert into t_admin (userName,userPw) values(#{userName},#{userPw});
+    </insert>
+    
+    <resultMap type="KeCheng" id="kecheng">
+	   <id property="id" column="id"/>
+	   <result property="bianhao" column="bianhao"/>
+	   <result property="mingcheng" column="mingcheng"/>
+	   <result property="keshi" column="keshi"/>
+	</resultMap>
+	 <select id="getAllKeCheng" resultType="kecheng">
+ 		select id,bianhao,mingcheng,keshi from t_kecheng
+ 	</select>
+ 	<delete id="delKeCheng" parameterType="kecheng">
+     delete from t_kecheng where bianhao=#{bianhao}
+    </delete> 
+    <insert id="insertKeCheng" parameterType="kecheng">
+     insert into t_kecheng (id,bianhao,mingcheng,keshi) values(#{id},#{bianhao},#{mingcheng},#{keshi});
+    </insert>
+	
+	<resultMap type="LaoShi" id="laoshi">
+	   <id property="id" column="id"/>
+	   <result property="bianhao" column="bianhao"/>
+	   <result property="xingming" column="xingming"/>
+	   <result property="xingbie" column="xingbie"/>
+	   <result property="nianling" column="nianling"/>
+	   <result property="zhicheng" column="zhicheng"/>
+	   <result property="loginname" column="loginname"/>
+	   <result property="loginpw" column="loginpw"/>
+	</resultMap>
+	<select id="user_log1" resultType="laoshi">
+ 		select id,bianhao,xingming,xingbie,nianling,zhicheng,loginname,loginpw from t_laoshi where loginname=#{loginname} and loginpw=#{loginpw}
+ 	</select>
+	 <select id="getAllLaoShi" resultType="laoshi">
+ 		select id,bianhao,xingming,xingbie,nianling,zhicheng,loginname,loginpw from t_laoshi
+ 	</select>
+ 	<delete id="delLaoShi" parameterType="laoshi">
+     delete from t_laoshi where bianhao=#{bianhao}
+    </delete> 
+    <insert id="insertLaoShi" parameterType="laoshi">
+     insert into t_laoshi (id,bianhao,xingming,xingbie,nianling,zhicheng,loginname,loginpw) values(#{id},#{bianhao},#{xingming},#{xingbie},#{nianling},#{zhicheng},#{loginname},#{loginpw});
+    </insert>
+    
+    <resultMap type="KeBiao" id="kebiao">
+	   <id property="id" column="id"/>
+	   <result property="shijian" column="shijian"/>
+	   <result property="jieci" column="jieci"/>
+	   <result property="jiaoshi" column="jiaoshi"/>
+	   <association property="laoshi" javaType="LaoShi">
+	      <id property="id" column="id"/>
+	      <result property="xingming" column="xingming"/>
+	   </association>
+	   <association property="kecheng" javaType="KeCheng">
+	      <id property="id" column="id"/>
+	      <result property="bianhao" column="bianhao"/>
+	      <result property="mingcheng" column="mingcheng"/>
+	      <result property="keshi" column="keshi"/>
+	   </association>
+	</resultMap>
+	<select id="getAllKeBiao" resultMap="kebiao">
+     select kb.id,kc.bianhao,kc.mingcheng,kc.keshi,kb.shijian,kb.jieci,kb.jiaoshi,ls.xingming from t_kecheng kc,t_kebiao kb,t_laoshi ls
+     where kb.kecheng_id=kc.id and kb.laoshi_id = ls.id
+  </select>
+  <delete id="delKeBiao" parameterType="kebiao">
+     delete from t_kebiao where id=#{id}
+  </delete> 
+  <insert id="insertKeBiao" parameterType="kebiao">
+     insert into t_kebiao (kecheng_id,shijian,jieci,jiaoshi,laoshi_id) values(#{kecheng.mingcheng},#{shijian},#{jieci},#{jiaoshi},#{laoshi.xingming});
+  </insert>
+  
+  <resultMap type="XueSheng" id="xuesheng">
+	   <id property="id" column="id"/>
+	   <result property="xuehao" column="xuehao"/>
+	   <result property="xingming" column="xingming"/>
+	   <result property="xingbie" column="xingbie"/>
+	   <result property="nianling" column="nianling"/>
+	   <result property="banji" column="banji"/>
+	   <result property="loginname" column="loginname"/>
+	   <result property="loginpw" column="loginpw"/>
+	</resultMap>
+	<select id="user_log2" resultType="xuesheng">
+ 		select loginname,loginpw from t_xuesheng where loginname=#{loginname} and loginpw=#{loginpw}
+ 	</select>
+	 <select id="getAllXueSheng" resultType="xuesheng">
+ 		select id,xuehao,xingming,xingbie,nianling,banji,loginname,loginpw from t_xuesheng
+ 	</select>
+ 	<delete id="delXueSheng" parameterType="xuesheng">
+     delete from t_xuesheng where id=#{id}
+    </delete> 
+    <insert id="insertXueSheng" parameterType="xuesheng">
+     insert into t_xuesheng (id,xuehao,xingming,xingbie,nianling,banji,loginname,loginpw) values(#{id},#{xuehao},#{xingming},#{xingbie},#{nianling},#{banji},#{loginname},#{loginpw});
+    </insert>
+ 	
+ 	<select id="getLS" resultType="LaoShi">
+ 	select id,bianhao,xingming,xingbie,nianling,zhicheng,loginname,loginpw from t_laoshi where id=#{id}
+ 	</select>
+ </mapper>
